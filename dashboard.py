@@ -104,7 +104,7 @@ def insight_box(text: str):
 # ═══════════════════════════════════════════════════════════════════════════════
 with st.sidebar:
     st.markdown("# 📩🔐")
-    st.title("Dashboard EDA - Deteksi Pesan Berhadiah Phishing")
+    st.title("Dashboard EDA · Deteksi Phishing SMS Berbahasa Indonesia")
     st.markdown("---")
     sections = [
         "🏠 Overview & Statistik Deskriptif",
