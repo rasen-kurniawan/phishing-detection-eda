@@ -22,7 +22,7 @@ warnings.filterwarnings("ignore")
 # ── Konfigurasi Halaman ───────────────────────────────────────────────────────
 st.set_page_config(
     page_title="EDA · Phishing SMS Indonesia",
-    page_icon="📩",
+    page_icon="🔍",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -107,12 +107,12 @@ with st.sidebar:
     st.title("Dashboard EDA · Deteksi Phishing SMS Berbahasa Indonesia")
     st.markdown("---")
     sections = [
-        "🏠 Overview & Statistik Deskriptif",
-        "📊 BQ1 · Distribusi & Keseimbangan Kelas",
-        "🎯 BQ2 · Modus Phishing Apa yang Paling Dominan?",
-        "🔗 BQ3 · URL, Nomor & Fitur Struktural",
-        "📝 BQ4 · Kata & Frasa Dominan",
-        "📏 BQ5 · Panjang Teks & Uji Statistik",
+        "Overview & Statistik Deskriptif",
+        "BQ1 · Distribusi & Keseimbangan Kelas",
+        "BQ2 · Modus Phishing Apa yang Paling Dominan?",
+        "BQ3 · URL, Nomor & Fitur Struktural",
+        "BQ4 · Kata & Frasa Dominan",
+        "BQ5 · Panjang Teks & Uji Statistik",
     ]
     section = st.radio("Pilih Bagian:", sections, label_visibility="collapsed")
     st.markdown("---")
@@ -134,7 +134,7 @@ df_normal   = df[df["label"] == 0].copy()
 # ═══════════════════════════════════════════════════════════════════════════════
 #  HEADER UTAMA
 # ═══════════════════════════════════════════════════════════════════════════════
-st.title("📩🔐 EDA · Deteksi Phishing SMS Berbahasa Indonesia")
+st.title("EDA · Deteksi Phishing SMS Berbahasa Indonesia")
 st.markdown(
     "Dashboard ini menyajikan Exploratory Data Analysis (EDA) untuk dataset "
     "**Phishing SMS Bahasa Indonesia**, mencakup statistik deskriptif dan "
@@ -147,7 +147,7 @@ st.markdown("---")
 #  BAGIAN 0 — OVERVIEW & STATISTIK DESKRIPTIF
 # ═══════════════════════════════════════════════════════════════════════════════
 if section == sections[0]:
-    st.header("🏠 Overview & Statistik Deskriptif")
+    st.header("Overview & Statistik Deskriptif")
  
     # KPI cards
     total = len(df)
@@ -157,7 +157,7 @@ if section == sections[0]:
     imbalance_ratio = max(n_phishing, n_normal) / min(n_phishing, n_normal)
 
     col1, col2, col3, col4, col5 = st.columns(5)
-    col1.metric("Total Data",            f"{total:,}")
+    col1.metric("Total Pesan",            f"{total:,}")
     col2.metric("Phishing",              f"{n_phishing:,}")
     col2.markdown(f"""
         <p style='background-color:#F44336; color:white; font-size:12px;
@@ -276,7 +276,7 @@ if section == sections[0]:
 #  BQ1 — DISTRIBUSI & KESEIMBANGAN KELAS
 # ═══════════════════════════════════════════════════════════════════════════════
 elif section == sections[1]:
-    st.header("📊 BQ1 · Seberapa Seimbang/Proporsional Data yang Dimiliki?")
+    st.header("BQ1 · Seberapa Seimbang/Proporsional Data yang Dimiliki?")
  
     st.markdown(
         """
@@ -289,25 +289,43 @@ elif section == sections[1]:
     st.markdown("---")
  
     # ── Metrik ───────────────────────────────────────────────────────────────
-    st.subheader("📌 Metrik Utama")
+    st.subheader("Metrik Utama")
     total      = len(df)
     n_phishing = (df["label"] == 1).sum()
     n_normal   = (df["label"] == 0).sum()
     rasio      = n_phishing / n_normal
     imbalance_ratio = max(n_phishing, n_normal) / min(n_phishing, n_normal)
- 
-    metric_row([
-        ("Total Data",            f"{total:,}"),
-        ("Phishing",              f"{n_phishing:,}",  f"{n_phishing/total*100:.1f}%"),
-        ("Normal",                f"{n_normal:,}",    f"{n_normal/total*100:.1f}%"),
-        ("Rasio Phishing:Normal", f"{rasio:.2f}:1"),
-        ("Imbalance Ratio",       f"{imbalance_ratio:.2f}x"),
-    ])
- 
+
+    col1, col2, col3, col4, col5 = st.columns(5)
+    col1.metric("Total Data",            f"{total:,}")
+    col2.metric("Phishing",              f"{n_phishing:,}")
+    col2.markdown(f"""
+        <p style='background-color:#F44336; color:white; font-size:12px;
+        padding:2px 7px; border-radius:6px; display:inline-block;
+        position:relative; top:-15px;'>
+            {n_phishing/total*100:.1f}%
+        </p>
+    """, unsafe_allow_html=True)
+    col3.metric("Normal",                f"{n_normal:,}")
+    col3.markdown(f"""
+        <p style='background-color:#2196F3; color:white; font-size:12px;
+        padding:2px 7px; border-radius:6px; display:inline-block;
+        position:relative; top:-15px;'>
+            {n_normal/total*100:.1f}%
+        </p>
+    """, unsafe_allow_html=True)
+    col4.metric("Rasio Phishing:Normal", f"{rasio:.2f}:1")
+    col5.metric("Imbalance Ratio", "1.52 : 1")
+    col5.markdown(f"""
+        <p style='font-size:11px; color:gray; position:relative; top:-15px;'>
+            Dataset ini didominasi oleh pesan phishing
+        </p>
+    """, unsafe_allow_html=True)
+
     st.markdown("---")
  
     # ── Visualisasi Bar + Donut ───────────────────────────────────────────────
-    st.subheader("📊 Visualisasi Distribusi Kelas")
+    st.subheader("Visualisasi Distribusi Kelas")
     fig, axes = plt.subplots(1, 2, figsize=(12, 5))
     fig.suptitle("Distribusi Kelas Dataset Phishing SMS Indonesia",
                  fontsize=13, fontweight="bold")
@@ -348,7 +366,7 @@ elif section == sections[1]:
     fig_to_streamlit(fig)
  
     # ── Tabel ringkasan ───────────────────────────────────────────────────────
-    st.subheader("📋 Tabel Distribusi Kelas")
+    st.subheader("Tabel Distribusi Kelas")
     tabel = pd.DataFrame({
         "Kelas"         : ["Normal", "Phishing", "Total"],
         "Jumlah"        : [n_normal, n_phishing, total],
@@ -361,7 +379,7 @@ elif section == sections[1]:
     st.dataframe(tabel, use_container_width=True, hide_index=True)
  
     st.markdown("---")
-    st.subheader("🔍 Penjelasan & Insight")
+    st.subheader("Penjelasan & Insight")
     insight_box(
         f"Dataset ini berisikan sebanyak 1.772 pesan, dengan didominasi oleh **pesan phishing** sebanyak **{n_phishing:,} ({n_phishing/total*100:.1f}%)** "
         f"serta **{n_normal:,}** lainnya merupakan **pesan normal ({n_normal/total*100:.1f}%)**. "
@@ -376,7 +394,7 @@ elif section == sections[1]:
 #  BQ2 — MODUS & TAKTIK PHISHING
 # ═══════════════════════════════════════════════════════════════════════════════
 elif section == sections[2]:
-    st.header("🎯 BQ2 · Modus Phishing Apa yang Paling Dominan?")
+    st.header("BQ2 · Modus Phishing Apa yang Paling Dominan?")
  
     st.markdown(
         """
@@ -400,7 +418,7 @@ elif section == sections[2]:
     n_urgensi    = df_ph["sub_kategori"].str.contains("urgensi", na=False).sum()
  
     # ── Metrik ───────────────────────────────────────────────────────────────
-    st.subheader("📌 Metrik Utama")
+    st.subheader("Metrik Utama")
     metric_row([
         ("Total Phishing",    f"{len(df_ph):,}"),
         ("Tag: minta_data",   f"{tag_counts.get('minta_data', 0):,}",
@@ -414,7 +432,7 @@ elif section == sections[2]:
     ])
  
     st.markdown("---")
-    st.subheader("📊 Visualisasi Frekuensi Tag Taktik Phishing")
+    st.subheader("Visualisasi Frekuensi Tag Taktik Phishing")
  
     col1, col2 = st.columns(2)
  
@@ -457,14 +475,14 @@ elif section == sections[2]:
         fig_to_streamlit(fig2)
  
     # ── Tabel ────────────────────────────────────────────────────────────────
-    st.subheader("📋 Tabel Frekuensi Tag Taktik")
+    st.subheader("Tabel Frekuensi Tag Taktik")
     tabel_tag = tag_counts.reset_index()
     tabel_tag.columns = ["Taktik", "Frekuensi"]
     tabel_tag["% dari Total Phishing"] = (tabel_tag["Frekuensi"] / len(df_ph) * 100).round(1)
     st.dataframe(tabel_tag, use_container_width=True, hide_index=True)
  
     st.markdown("---")
-    st.subheader("🔍 Penjelasan & Insight")
+    st.subheader("Penjelasan & Insight")
     insight_box(
         f"Pesan Berjenis **minta_data** merupakan pesan yang paling dominan pada dataset ini, dengan total sebanyak "
         f"{tag_counts.get('minta_data',0):,} pesan "
@@ -482,7 +500,7 @@ elif section == sections[2]:
 #  BQ3 — URL, NOMOR & FITUR STRUKTURAL
 # ═══════════════════════════════════════════════════════════════════════════════
 elif section == sections[3]:
-    st.header("🔗 BQ3 · Apakah URL, Nomor Panjang & Fitur Lain Menjadi Indikator Kuat Phishing?")
+    st.header("BQ3 · Apakah URL, Nomor Panjang & Fitur Lain Menjadi Indikator Kuat Phishing?")
  
     st.markdown(
         """
@@ -504,7 +522,7 @@ elif section == sections[3]:
     )
  
     # ── Metrik ───────────────────────────────────────────────────────────────
-    st.subheader("📌 Metrik Utama")
+    st.subheader("Metrik Utama")
     pct_url_phishing   = df_phishing["has_url"].mean() * 100
     pct_url_normal     = df_normal["has_url"].mean() * 100
     pct_phone_phishing = df_phishing["has_phone"].mean() * 100
@@ -580,7 +598,7 @@ elif section == sections[3]:
         fig_to_streamlit(fig2)
  
     # Statistik deskriptif fitur per kelas
-    st.subheader("📋 Statistik Deskriptif Fitur Numerik per Kelas")
+    st.subheader("Statistik Deskriptif Fitur Numerik per Kelas")
     tabel_stat = (
         df.groupby("label_nama")[
             ["text_length", "word_count", "exclamation_count",
@@ -592,7 +610,7 @@ elif section == sections[3]:
     st.dataframe(tabel_stat, use_container_width=True)
  
     # Correlation table
-    st.subheader("📋 Tabel Korelasi Fitur → Label")
+    st.subheader("Tabel Korelasi Fitur → Label")
     corr_df = corr_series.reset_index()
     corr_df.columns = ["Fitur", "Korelasi Pearson"]
     corr_df["Interpretasi"] = corr_df["Korelasi Pearson"].apply(
@@ -604,7 +622,7 @@ elif section == sections[3]:
     st.dataframe(corr_df, use_container_width=True, hide_index=True)
  
     st.markdown("---")
-    st.subheader("🔍 Penjelasan & Insight")
+    st.subheader("Penjelasan & Insight")
     insight_box(
             "Fitur **has_code** memiliki korelasi negatif terkuat (-0.230), menandakan bahwa pesan normal "
             "justru lebih sering mengandung kode numerik, kemungkinan besar berupa kode OTP resmi. "
@@ -622,7 +640,7 @@ elif section == sections[3]:
 #  BQ4 — KATA & FRASA DOMINAN
 # ═══════════════════════════════════════════════════════════════════════════════
 elif section == sections[4]:
-    st.header("📝 BQ4 · Kata dan Frasa Apa yang Paling Sering Muncul di Phishing vs Normal?")
+    st.header("BQ4 · Kata dan Frasa Apa yang Paling Sering Muncul di Phishing vs Normal?")
  
     st.markdown(
         """
@@ -665,7 +683,7 @@ elif section == sections[4]:
     ph_words, nm_words, ph_tfidf, nm_tfidf = compute_word_stats(df)
  
     # ── Metrik ───────────────────────────────────────────────────────────────
-    st.subheader("📌 Kata Paling Diskriminatif")
+    st.subheader("Kata Paling Diskriminatif")
     top_phishing_word = ph_words[0][0] if ph_words else "-"
     top_normal_word   = nm_words[0][0] if nm_words else "-"
     metric_row([
@@ -677,7 +695,7 @@ elif section == sections[4]:
  
     st.markdown("---")
  
-    tab1, tab2 = st.tabs(["📊 Frekuensi & TF-IDF", "☁️ Word Cloud"])
+    tab1, tab2 = st.tabs(["Frekuensi & TF-IDF", "Word Cloud"])
  
     with tab1:
         col1, col2 = st.columns(2)
@@ -723,7 +741,7 @@ elif section == sections[4]:
             fig_to_streamlit(fig2)
  
         # Tabel
-        st.subheader("📋 Tabel Frekuensi Kata")
+        st.subheader("Tabel Frekuensi Kata")
         c1, c2 = st.columns(2)
         with c1:
             st.markdown("**Phishing**")
@@ -772,7 +790,7 @@ elif section == sections[4]:
             fig_to_streamlit(fig2, "Pesan Normal")
  
     st.markdown("---")
-    st.subheader("🔍 Penjelasan & Insight")
+    st.subheader("Penjelasan & Insight")
     insight_box(
         "Pada top kata kategori phishing, tautan url menjadi salah satu unsur yang paling sering muncul dalam pesan, diikuti oleh kata 'kirim', 'klik','com', dan 'situs'." \
         "Sedangkan pada kategori pesan normal, kata 'vince','terima','enron','kasih', dan 'ect' menjadi kata yang paling sering muncul dalam teks pesan. "\
@@ -786,7 +804,7 @@ elif section == sections[4]:
 #  BQ5 — PANJANG TEKS & UJI STATISTIK
 # ═══════════════════════════════════════════════════════════════════════════════
 elif section == sections[5]:
-    st.header("📏 BQ5 · Apakah Panjang Teks Pesan Phishing Berbeda Signifikan dengan Normal?")
+    st.header("BQ5 · Apakah Panjang Teks Pesan Phishing Berbeda Signifikan dengan Normal?")
  
     st.markdown(
         """
@@ -812,7 +830,7 @@ elif section == sections[5]:
     rb_char = 1 - (2 * u_char) / (n1 * n2)
  
 # ── Metrik ───────────────────────────────────────────────────────────────
-    st.subheader("📌 Metrik Utama")
+    st.subheader("Metrik Utama")
     p_mantissa, p_exponent = f"{p_char:.2e}".split("e")
     
     col_m1, col_m2, col_m3, col_m4, col_m5 = st.columns(5)
@@ -825,7 +843,7 @@ elif section == sections[5]:
     st.markdown("---")
  
     # ── Visualisasi ───────────────────────────────────────────────────────────
-    st.subheader("📊 Visualisasi Distribusi Panjang Teks")
+    st.subheader("Visualisasi Distribusi Panjang Teks")
     fig, axes = plt.subplots(1, 3, figsize=(15, 5))
     fig.suptitle("Distribusi Panjang Teks: Phishing vs Normal", fontweight="bold")
  
@@ -871,7 +889,7 @@ elif section == sections[5]:
     fig_to_streamlit(fig)
  
     # ── Tabel ringkasan statistik ─────────────────────────────────────────────
-    st.subheader("📋 Tabel Statistik Panjang Teks per Kelas")
+    st.subheader("Tabel Statistik Panjang Teks per Kelas")
     summary = pd.DataFrame({
         "Metrik"             : ["Count", "Mean", "Median", "Std", "Min", "Max", "Q25", "Q75"],
         "Phishing (karakter)": [
@@ -902,7 +920,7 @@ elif section == sections[5]:
     st.dataframe(summary, use_container_width=True, hide_index=True)
  
     # ── Uji statistik ─────────────────────────────────────────────────────────
-    st.subheader("🧪 Hasil Uji Statistik (Mann-Whitney U)")
+    st.subheader("Hasil Uji Statistik (Mann-Whitney U)")
     st.markdown(
         "> *Mann-Whitney U* dipilih karena distribusi panjang teks tidak normal "
         "(terlihat dari right-skewed histogram di atas)."
@@ -920,7 +938,7 @@ elif section == sections[5]:
     st.dataframe(uji_df, use_container_width=True, hide_index=True)
  
     st.markdown("---")
-    st.subheader("🔍 Penjelasan & Insight")
+    st.subheader("Penjelasan & Insight")
     insight_box(
         "Uji Mann-Whitney U menunjukkan adanya perbedaan menarik antara metrik karakter dan kata. "
         f"Pada fitur **Jumlah Karakter**, perbedaan panjang teks bersifat **signifikan secara statistik** "
